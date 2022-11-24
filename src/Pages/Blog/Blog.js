@@ -2,9 +2,10 @@ import React from 'react';
 
 const Blog = () => {
     return (
-        <div>
-            <h2>this is blog page</h2>
-        </div>
+        <select className="select select-accent w-full max-w-xs">
+            <option disabled selected>Dark mode or light mode?</option>
+            <option>Auto</option>
+        </select>
     );
 };
 

@@ -6,7 +6,7 @@ import { AuthContext } from '../../Context/AuthContext';
 
 const Login = () => {
     const { register,formState:{errors}, handleSubmit } = useForm();
-    const {signIn}=useContext(AuthContext);
+    const {signIn,googleLogIn}=useContext(AuthContext);
     const [loginError,setLoginError]=useState('');
     const location=useLocation();
     const navigate=useNavigate();
@@ -14,7 +14,14 @@ const Login = () => {
 
     const from=location.state?.from?.pathname || '/';
 
-    
+    const handleGoogle=()=>{
+          googleLogIn()
+          .then((result)=>{
+            setLoginError('');
+            console.log(result.user);
+            navigate(from,{replace:true});
+          })
+    }
 
     const handleLogin=data=>{
         console.log(data);
@@ -69,9 +76,9 @@ const Login = () => {
                     </div>
                 </form>
                 <p>
-                    New to doctors portal <Link className='text-secondary' to='/signup'>Create an account</Link> 
+                    New to camera bazrar <Link className='text-secondary' to='/signup'>Create an account</Link> 
                     <div className="divider">OR</div>
-                    <button className='btn btn-outline w-full'>CONTINUE WITH GOOGLE</button>
+                    <button onClick={handleGoogle} className='btn btn-outline w-full'>CONTINUE WITH GOOGLE</button>
                 </p>
             </div>
         </div>
