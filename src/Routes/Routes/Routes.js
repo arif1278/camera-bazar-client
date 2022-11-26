@@ -3,8 +3,9 @@ import Main from "../../Layout/Main";
 import Blog from "../../Pages/Blog/Blog";
 import Home from "../../Pages/Home/Home/Home";
 import Login from "../../Pages/Login/Login";
-import ProductCategory from "../../Pages/ProductCategory/ProductCategory";
+import ProductCategory from "../../Pages/CameraCategory/CamerCategory";
 import SignUp from "../../Pages/SignUp/SignUp";
+import Products from "../../Pages/ProductCategory/Products";
 
 
 export const router = createBrowserRouter([
@@ -29,9 +30,14 @@ export const router = createBrowserRouter([
                 element:<Blog></Blog>
             },
             {
-                path:'/home',
+                path:'/cameraOptions',
                 element:<ProductCategory></ProductCategory>,
-                loader: () => fetch('http://localhost:5000/cameraOptions')
+                
+            },
+            {
+                path: '/cameraOptions/:id',
+                element:<Products></Products> ,
+                loader: ({ params }) => fetch(`http://localhost:5000/cameraOptions/${params.id}`)
             },
         ]
 

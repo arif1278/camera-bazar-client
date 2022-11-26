@@ -1,5 +1,5 @@
 import React from 'react';
-import ProductCategory from '../../ProductCategory/ProductCategory';
+import ProductCategory from '../../CameraCategory/CamerCategory';
 import Banner from '../Banner/Banner';
 import ProccessSelling from '../ProccessSelling/ProccessSelling';
 
