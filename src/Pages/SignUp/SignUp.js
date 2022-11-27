@@ -26,6 +26,7 @@ const SignUp = () => {
         }
         updateUser(userInfo)
         .then(()=>{
+            navigate('/');
             // saveUser(data.name,data.email);
         })
         

@@ -6,6 +6,9 @@ import Login from "../../Pages/Login/Login";
 import ProductCategory from "../../Pages/CameraCategory/CamerCategory";
 import SignUp from "../../Pages/SignUp/SignUp";
 import Products from "../../Pages/ProductCategory/Products";
+import Dashbord from "../../Pages/Dashboard/Dashboard/Dashbord";
+import PrivateRouter from "../PrivateRouter/PrivateRouter";
+import DashboardLayout from "../../Layout/DashboardLayout";
 
 
 export const router = createBrowserRouter([
@@ -42,6 +45,16 @@ export const router = createBrowserRouter([
         ]
 
 
+    },
+    {
+        path:'/dashboard',
+        element:<PrivateRouter><DashboardLayout></DashboardLayout></PrivateRouter>,
+        children:[
+            {
+                path:'/dashboard',
+                element:<Dashbord></Dashbord>
+            }
+        ]
     }
 ])
 

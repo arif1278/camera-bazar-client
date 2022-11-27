@@ -27,14 +27,13 @@ const signIn=(email,password)=>{
     return signInWithEmailAndPassword(auth,email,password);
 }
 
-
 const updateUser=(userInfo)=>{
     return updateProfile(auth.currentUser,userInfo);
 }
 
 const logOut=()=>{
     setLoading(true);
-    return signOut(auth)
+    return signOut(auth);
 }
 
 useEffect(()=>{
