@@ -6,52 +6,54 @@ import { AuthContext } from '../../Context/AuthContext';
 
 const SignUp = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const { createUser,updateUser } = useContext(AuthContext);
-    const [signUpError,setSignUpError]=useState('');
-    const navigate=useNavigate();
+    const { createUser, updateUser } = useContext(AuthContext);
+    const [signUpError, setSignUpError] = useState('');
+    const [userRole,setUserRole]=useState();
+    const navigate = useNavigate();
 
 
     const handleSignUp = (data) => {
         console.log(data);
         setSignUpError('');
-     createUser(data.email,data.password)
-     .then(result=>{
-        const user=result.user;
-        console.log(user);
-        navigate('/'); 
-       toast('User Created Successfully.')
+        createUser(data.email, data.password)
+            .then(result => {
+                const user = result.user;
+                console.log(user);
+                navigate('/');
+                toast('User Created Successfully.')
 
-        const userInfo={
-            displayName:data.name
-        }
-        updateUser(userInfo)
-        .then(()=>{
-            navigate('/');
-            // saveUser(data.name,data.email);
-        })
-        
-        .catch(err=>console.log(err));
+                const userInfo = {
+                    displayName: data.name
+                }
+                updateUser(userInfo)
+                    .then(() => {
+                        saveUser(data.name, data.email,data.role);
+                    })
 
-     })
-     .catch(error=>{
-        console.log(error)
-        setSignUpError(error.message)
-     });
+                    .catch(err => console.log(err));
+
+            })
+            .catch(error => {
+                console.log(error)
+                setSignUpError(error.message)
+            });
     }
 
-    // const saveUser=(name,email)=>{
-    //     const user ={name,email};
-    //     fetch('http://localhost:5000/users',{
-    //         method:'POST',
-    //         headers:{
-    //             'content-type':'application/json'
-    //         },
-    //         body:JSON.stringify(user)
-    //     })
-    //     .then(res=> res.json())
-    //     .then(data=>console.log(data));
-    //    
-    // }
+    const saveUser = (name, email,role) => {
+        const user = { name, email,role };
+        fetch('http://localhost:5000/users', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+            .then(res => res.json())
+            .then(data => console.log('saveuser', data));
+
+        navigate('/');
+
+    }
 
 
 
@@ -61,6 +63,24 @@ const SignUp = () => {
             <div className='w-96 p-8'>
                 <h1 className='text-4xl text-center'>signUp</h1>
                 <form onSubmit={handleSubmit(handleSignUp)}>
+                    <div className='account option'>
+                        <label className='label p-1'>
+                            <span className='label-text'>Choose an option</span>
+
+                        </label>
+                        <select {...register("role")}
+                        className='select select-bordered w-full max-w-xs'
+                        >
+                            <option>Select an Option</option>
+                            <option value="Buyer"
+                            onChange={(event)=>setUserRole(event.target.value)}
+                            >Buyer</option>
+                            <option value="Seller"
+                            onChange={(event)=>setUserRole(event.target.value)}
+                            >Seller</option>
+                        </select>
+
+                    </div>
                     <div className="form-control w-full max-w-xs">
                         <label className="label"> <span className="label-text">Name</span> </label>
                         <input type="text" {...register("name", {
@@ -87,6 +107,7 @@ const SignUp = () => {
                     </div>
                     <input className='btn btn-accent w-full' type="submit" />
                     {signUpError && <p className='text-red-600'>{signUpError}</p>}
+                    {userRole && <p className='text-red-600'>{userRole}</p>}
                 </form>
                 <p>
                     allready have an account <Link className='text-secondary' to='/login'>please login</Link>

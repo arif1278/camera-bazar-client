@@ -32,7 +32,9 @@ const MyOrder = () => {
                     </thead>
                     <tbody>
                         {
-                            bookings.map((option, i) => <tr>
+                            bookings.map((option, i) => <tr
+                            key={option._id}
+                            >
                                 <th>{i + 1}</th>
                                 <td><div className="mask mask-squircle w-12 h-12">
                                     <img src={option.image} alt="Avatar Tailwind CSS Component" />
