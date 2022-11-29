@@ -9,6 +9,9 @@ import Products from "../../Pages/ProductCategory/Products";
 import PrivateRouter from "../PrivateRouter/PrivateRouter";
 import DashboardLayout from "../../Layout/DashboardLayout";
 import MyOrder from "../../Pages/Dashboard/MyOrder/MyOrder";
+import AllSeller from "../../Pages/Dashboard/AllSellers/AllSeller";
+import AddProduct from "../../Pages/AddProduct/AddProduct";
+import MyProducts from "../../Pages/AddProduct/MyProducts";
 
 
 export const router = createBrowserRouter([
@@ -33,6 +36,14 @@ export const router = createBrowserRouter([
                 element:<Blog></Blog>
             },
             {
+                path:'/product',
+                element:<AddProduct></AddProduct>
+            },
+            {
+                path:'/myproducts',
+                element:<MyProducts></MyProducts>
+            },
+            {
                 path:'/cameraOptions',
                 element:<ProductCategory></ProductCategory>,
                 
@@ -53,7 +64,11 @@ export const router = createBrowserRouter([
             {
                 path:'/dashboard',
                 element:<MyOrder></MyOrder>
-            }
+            },
+            {
+                path:'/dashboard/allseller',
+                element:<AllSeller></AllSeller>
+            },
         ]
     }
 ])
