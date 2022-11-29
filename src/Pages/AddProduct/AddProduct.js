@@ -27,7 +27,7 @@ const AddProduct = () => {
             yearOfPurchase
         }
 
-        fetch('http://localhost:5000/addproduct', {
+        fetch('http://localhost:5000/addproducts', {
             method: "POST",
             headers: {
                 'content-type': 'application/json'
