@@ -1,10 +1,12 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 
 const ProductDetails = ({ product,setProduct }) => {
     const { name, image,sellerName,number,resalePrice,originalPrice,uses,location
 ,time    } = product;
     return (
         <div className="card w-96 bg-base-100 shadow-xl">
+            <Helmet><title>Cameras - Camerabazar</title></Helmet>
             <figure className="px-10 pt-10">
                 <img src={image} alt="Shoes" className="rounded-xl" />
             </figure>

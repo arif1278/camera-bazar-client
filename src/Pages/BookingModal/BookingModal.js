@@ -1,67 +1,92 @@
-import React, { useContext } from 'react';
+import { format } from 'date-fns';
+import React, { useContext, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { AuthContext } from '../../Context/AuthContext';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../../Context/AuthProvider/AuthProvider';
+import FormLoader from '../FormLoader/FormLoader';
 
-const BookingModal = ({ product, setProduct }) => {
-    const { name, resalePrice } = product;
-    const { user } = useContext(AuthContext);
+const BookingModal = ({ product,setProduct,refetch }) => {
 
-    const handleBooking = event => {
-        event.preventDefault();
-        const form = event.target;
-        const pname = form.pname.value;
-        const email = form.email.value;
-        const phone = form.phone.value;
-        const location = form.location.value;
+    const { _id, name, resalePrice, sellerEmail, image } = product;
+    const { userInfo } = useContext(AuthContext);
+    const { register, handleSubmit } = useForm();
+    const [formLoading, setFormLoading] = useState(false);
 
-        const booking = {
-            name,
-            resalePrice,
-            pname,
-            email,
-            phone,
-            location
+    // Post booking/order
+    const handleForm = (data) => {
+        setFormLoading(true);
+        const date = format(new Date(), 'PPPpp');
+
+        const order = {
+            productId: _id,
+            product: name,
+            price: resalePrice,
+            image,
+            buyerName: userInfo.displayName,
+            buyerEmail: userInfo.email,
+            buyerPhone: data.phone,
+            sellerEmail,
+            purchaseDate: date,
+            location: data.location,
+            status: 'unpaid'
         }
 
-        fetch('http://localhost:5000/cameraOptions', {
-            method: "POST",
+        fetch('http://localhost:5000/orders', {
+            method: 'POST',
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                authorization: `Bearer ${localStorage.getItem('camerabazarsecrettoken')}`
             },
-            body: JSON.stringify(booking)
+            body: JSON.stringify(order)
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
-               if(data.acknowledged){
-                setProduct(null);
-                toast.success('Booking confirmed')
-               }
+                if (data.acknowledged) {
+                    refetch();
+                    setProduct(null);
+                    toast.success('Product Booked.');
+                }
+                if (data.message) {
+                    toast.error(data.message);
+                    setProduct(null);
+                }
             })
-
+            .catch(error => toast.error(error.message))
+            .finally(() => setFormLoading(false))
     }
 
-
     return (
-        <>
+        <div>
+            {/* Put this part before </body> tag */}
             <input type="checkbox" id="booking-modal" className="modal-toggle" />
-            <div className="modal">
-                <div className="modal-box relative">
-                    <label htmlFor="booking-modal" className="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
-                    <h3 className="text-lg font-bold">{name}</h3>
-                    <form onSubmit={handleBooking} className='grid grid-cols-1 gap-2 mt-6'>
-                        <input type="text" disabled value={name} placeholder="productName" className="input input-bordered w-full" />
-                        <input type="text" disabled value={resalePrice} placeholder="price" className="input input-bordered w-full" />
-                        <input type="text" name='pname' defaultValue={user?.displayName} disabled placeholder="name" className="input input-bordered w-full" />
-                        <input type="email" name='email' defaultValue={user?.email} disabled placeholder="email" className="input input-bordered w-full" />
-                        <input type="text" name='location' placeholder="location" className="input input-bordered w-full" />
-                        <input type="text" name='phone' placeholder="phone" className="input input-bordered w-full" />
-                        <br />
-                        <input className='btn eccent w-full ' type="submit" value="Submit" />
-                    </form>
-                </div>
-            </div>
-        </>
+            <label htmlFor="booking-modal" className="modal cursor-pointer">
+                <label className="modal-box relative" htmlFor="">
+                    {
+                        formLoading && <FormLoader>Booking Product...</FormLoader>
+                    }
+                    <label htmlFor="booking-modal" className="btn btn-sm btn-circle absolute right-2 top-2 pt-1">✕</label>
+                    <div className='max-w-md mx-2'>
+                        <h3 className="text-lg font-bold">{name}</h3>
+                        <p className='flex items-center text-lg' >Price: $ {resalePrice}</p>
+                    </div>
+                    {
+                        userInfo && userInfo.email ?
+                            <form onSubmit={handleSubmit(handleForm)} className='max-w-md pt-4 rounded-lg flex flex-col gap-4 flex-1 mx-auto'>
+                                <input value={userInfo?.displayName} className="input input-bordered w-full input-disabled" readOnly />
+                                <input value={userInfo?.email} className="input input-bordered w-full input-disabled" readOnly />
+                                <input {...register('phone')} type="text" placeholder="Phone Number" className="input input-bordered w-full" required />
+                                <input {...register('location')} type="text" placeholder="Location" className="input input-bordered w-full" required />
+                                <button type='submit' className='btn bg-base-300 hover:glass'>Book</button>
+                            </form>
+                            :
+                            <div className='pt-4'>
+                                <Link to='/login'><button className='btn bg-base-300 hover:glass' disabled={formLoading}>Login to Book</button></Link>
+                            </div>
+                    }
+                </label>
+            </label>
+        </div>
     );
 };
 

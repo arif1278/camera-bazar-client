@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import BookingModal from '../../../Components/BookingModal/BookingModal';
+import BookingModal from '../../BookingModal/BookingModal';
 import AdvertisedProductCard from './AdvertisedProductCard';
 
 const AdvertisedProducts = ({ advertisedProducts, refetch }) => {

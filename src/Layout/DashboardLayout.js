@@ -1,26 +1,70 @@
-import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { RiCloseFill, RiDashboardFill } from 'react-icons/ri';
+import { NavLink, Outlet, ScrollRestoration } from 'react-router-dom';
+import { AuthContext } from '../Context/AuthProvider/AuthProvider';
 import Navbar from '../Pages/Shared/Navbar/Navbar';
 
 const DashboardLayout = () => {
-    return (
-        <div>
-            <Navbar></Navbar>
-            <div className="drawer drawer-mobile">
-                <input id="drawer" type="checkbox" className="drawer-toggle" />
-                <div className="drawer-content">
-                   <Outlet></Outlet>
-                </div>
-                <div className="drawer-side">
-                    <label htmlFor="drawer" className="drawer-overlay"></label>
-                    <ul className="menu p-4 w-80 bg-base-100 text-base-content">
-                       
-                        <li><Link to="/dashboard">My orders</Link></li>
-                        <li><Link to="/dashboard/allseller">My products</Link></li>
-                    </ul>
 
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { userInfo } = useContext(AuthContext);
+
+    return (
+        <div className='container mx-auto max-w-screen-xl'>
+            <Navbar></Navbar>
+            <Helmet><title>Dashbord - Camerabazar</title></Helmet>
+            {/* Dashboard menu toggler */}
+            <div className='lg:hidden px-2 mb-1'>
+                <label onClick={() => setIsMenuOpen(!isMenuOpen)} htmlFor="dashboard-drawer" className="btn btn-ghost text-right">{
+                    isMenuOpen ?
+                        <><RiCloseFill className="inline-block w-6 h-6 stroke-current"></RiCloseFill><span className='pt-1 pl-2'>Close Menu</span></>
+                        :
+                        <><RiDashboardFill className="inline-block w-6 h-6 stroke-current"></RiDashboardFill><span className='pt-1 pl-2'>Open Menu</span></>
+                }</label>
+            </div>
+            <div className="drawer drawer-mobile bg-neutral-focus lg:mt-10">
+                <input id="dashboard-drawer" type="checkbox" className="drawer-toggle" />
+                <div className="drawer-content p-4 pt-6">
+                    <Outlet></Outlet>
+                </div>
+
+                <div className="drawer-side">
+                    <label onClick={() => setIsMenuOpen(!isMenuOpen)} htmlFor="dashboard-drawer" className="drawer-overlay"></label>
+                    <ul className="menu w-80 bg-base-100 text-base-content">
+                        {/* <!-- Sidebar content here --> */}
+                        <li><NavLink to='/dashboard' className={({ isActive }) => isActive ? 'bg-neutral-focus text-white' : undefined} end>Dashboard</NavLink></li>
+
+                        {/* Admin dashboard */}
+                        {
+                            (userInfo?.role === 'admin') &&
+                            <>
+                                <li><NavLink to='/dashboard/all-sellers' className={({ isActive }) => isActive ? 'bg-neutral-focus text-white' : undefined} end>All Sellers</NavLink></li>
+                                <li><NavLink to='/dashboard/all-buyers' className={({ isActive }) => isActive ? 'bg-neutral-focus text-white' : undefined} end>All Buyers</NavLink></li>
+                                <li><NavLink to='/dashboard/reported-products' className={({ isActive }) => isActive ? 'bg-neutral-focus text-white' : undefined} end>Reported Products</NavLink></li>
+                            </>
+                        }
+
+                        {/* Seller dashboard */}
+                        {
+                            (userInfo?.role === 'seller') &&
+                            <>
+                                <li><NavLink to='/dashboard/my-products' className={({ isActive }) => isActive ? 'bg-neutral-focus text-white' : undefined}>My Products</NavLink></li>
+                                <li><NavLink to='/dashboard/add-product' className={({ isActive }) => isActive ? 'bg-neutral-focus text-white' : undefined}>Add Product</NavLink></li>
+                            </>
+                        }
+
+                        {/* Buyer dashboard */}
+                        {
+                            (userInfo?.role === 'buyer') &&
+                            <>
+                                <li><NavLink to='/dashboard/my-orders' className={({ isActive }) => isActive ? 'bg-neutral-focus text-white' : undefined}>My Orders</NavLink></li>
+                            </>
+                        }
+                    </ul>
                 </div>
             </div>
+            <ScrollRestoration></ScrollRestoration>
         </div>
     );
 };

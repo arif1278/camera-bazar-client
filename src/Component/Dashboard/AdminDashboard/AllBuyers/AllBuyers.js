@@ -1,10 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 import toast from 'react-hot-toast';
-import ConfirmModal from '../../../../Components/ConfirmModal/ConfirmModal';
-import Loader from '../../../../Components/Loader/Loader';
+import Loader from '../../../../Pages/Loader/Loader';
+import ConfirmModal from '../../../ConfirmModal/ConfirmModal';
 
 const AllBuyers = () => {
 
@@ -14,7 +13,7 @@ const AllBuyers = () => {
     const { isLoading, data: buyers, refetch } = useQuery({
         queryKey: ['buyers'],
         queryFn: () =>
-            axios.get('https://cadence-watches-server.vercel.app/users?role=buyer', {
+            axios.get('http://localhost:5000/users?role=buyer', {
                 headers: {
                     authorization: `Bearer ${localStorage.getItem('cadenceSecretToken')}`
                 }
@@ -25,7 +24,7 @@ const AllBuyers = () => {
     // Delete buyer
     const handleDelete = (data) => {
         const id = data._id;
-        fetch(`https://cadence-watches-server.vercel.app/users/${id}`, {
+        fetch(`http://localhost:5000/users/${id}`, {
             method: 'DELETE',
             headers: {
                 authorization: `Bearer ${localStorage.getItem('cadenceSecretToken')}`
@@ -43,7 +42,6 @@ const AllBuyers = () => {
 
     return (
         <div>
-            <Helmet><title>All Buyers - Cadence</title></Helmet>
             <h2 className='text-center text-2xl font-medium pb-4'>All Buyers</h2>
             {
                 isLoading ?

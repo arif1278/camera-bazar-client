@@ -1,7 +1,6 @@
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
 import { useLoaderData } from 'react-router-dom';
 import CheckoutForm from './CheckoutForm';
 
@@ -13,7 +12,6 @@ const Checkout = () => {
 
     return (
         <div>
-            <Helmet><title>Checkout - Cadence</title></Helmet>
             <div className='text-center'>
                 <h2 className='text-2xl font-medium pb-4'>Checkout your product</h2>
                 <p>Use the dashboard menu to navigate</p>

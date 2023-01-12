@@ -1,46 +1,64 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../Context/AuthContext';
+import { AuthContext } from '../../Context/AuthProvider/AuthProvider';
+import GoogleSignIn from '../../firebase/GoogleSignIn';
+import FormLoader from '../FormLoader/FormLoader';
+import useToken from '../Hooks/useToken';
 
 const SignUp = () => {
+    const { createUser, setUserInfo, updateUserProfile, setUserLoading } = useContext(AuthContext);
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const { createUser, updateUser } = useContext(AuthContext);
-    const [signUpError, setSignUpError] = useState('');
-    const [userRole,setUserRole]=useState();
+    const [loginEmail, setLoginEmail] = useState('');
+    const [token] = useToken(loginEmail);
     const navigate = useNavigate();
+    const [formLoading, setFormLoading] = useState(false);
+    const [redirect, setRedirect] = useState(false);
 
+    useEffect(() => {
+        if (token) {
+            setRedirect(false);
+            navigate('/');
+        }
+    }, [token, navigate])
 
-    const handleSignUp = (data) => {
-        console.log(data);
-        setSignUpError('');
-        createUser(data.email, data.password)
-            .then(result => {
-                const user = result.user;
-                console.log(user);
-                navigate('/');
-                toast('User Created Successfully.')
+    const handleForm = (data) => {
+        setFormLoading(true);
+        const name = data.name;
+        const email = data.email.toLowerCase();
+        const password = data.password;
+        const role = data.role;
+        const displayName = name;
 
-                const userInfo = {
-                    displayName: data.name
-                }
-                updateUser(userInfo)
+        createUser(email, password)
+            .then(userCredential => {
+                const user = userCredential.user;
+                const currentUser = { ...user, role, displayName };
+                const profile = { displayName: name };
+                setRedirect(true);
+                updateUserProfile(profile)
                     .then(() => {
-                        saveUser(data.name, data.email,data.role);
+                        saveUserInfo(name, email, role);
+                        setUserInfo(currentUser);
                     })
-
-                    .catch(err => console.log(err));
-
+                    .catch(error => toast.error(error.message))
             })
-            .catch(error => {
-                console.log(error)
-                setSignUpError(error.message)
-            });
+            .catch(error => toast.error(error.message))
+            .finally(() => {
+                setUserLoading(false);
+                setFormLoading(false);
+            })
     }
 
-    const saveUser = (name, email,role) => {
-        const user = { name, email,role };
+
+    const saveUserInfo = (name, email, role) => {
+        const user = {
+            name,
+            email,
+            role
+        }
+
         fetch('http://localhost:5000/users', {
             method: 'POST',
             headers: {
@@ -49,71 +67,73 @@ const SignUp = () => {
             body: JSON.stringify(user)
         })
             .then(res => res.json())
-            .then(data => console.log('saveuser', data));
-
-        navigate('/');
-
+            .then(data => {
+                if (data.acknowledged) {
+                    setLoginEmail(email);
+                    toast.success('Registered successfully.');
+                }
+            })
+            .catch(error => toast.error(error.message))
     }
 
-
-
-
     return (
-        <div className='h-[800px] flex justify-center items-center'>
-            <div className='w-96 p-8'>
-                <h1 className='text-4xl text-center'>signUp</h1>
-                <form onSubmit={handleSubmit(handleSignUp)}>
-                    <div className='account option'>
-                        <label className='label p-1'>
-                            <span className='label-text'>Choose an option</span>
-
+        <div className='container mx-auto max-w-screen-xl px-2 md:px-4 xl:px-0 flex justify-center mt-20'>
+            
+            <div className='max-w-md p-6 border border-neutral-content rounded-lg flex-1 relative'>
+                {
+                    formLoading && <FormLoader>Registering...</FormLoader>
+                }
+                {
+                    redirect && <FormLoader>Redirecting...</FormLoader>
+                }
+                <form onSubmit={handleSubmit(handleForm)} className='flex flex-col gap-4'>
+                    <h1 className='text-2xl font-medium text-center'>Register</h1>
+                    <div className="form-control w-full">
+                        <label className="label">
+                            <span className="label-text font-medium">Full Name</span>
                         </label>
-                        <select {...register("role")}
-                        className='select select-bordered w-full max-w-xs'
-                        >
-                            <option>Select an Option</option>
-                            <option value="Buyer"
-                            onChange={(event)=>setUserRole(event.target.value)}
-                            >Buyer</option>
-                            <option value="Seller"
-                            onChange={(event)=>setUserRole(event.target.value)}
-                            >Seller</option>
-                        </select>
+                        <input {...register('name')} type="text" placeholder="Your Full Name" className="input input-bordered border-2 w-full" required />
+                    </div>
+                    <div className="form-control w-full">
+                        <label className="label">
+                            <span className="label-text font-medium">Email</span>
+                        </label>
+                        <input {...register('email')} type="email" placeholder="Your Email" className="input input-bordered border-2 w-full" required />
+                    </div>
+                    <div className="form-control w-full">
+                        <label className="label">
+                            <span className="label-text font-medium">Password</span>
+                        </label>
+                        <input {...register('password', {
+                            required: 'Password is required.',
+                            minLength: {
+                                value: 6,
+                                message: 'Password must be 6 characters long.'
+                            },
+                            pattern: {
+                                value: /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+                                message: 'Password must contain a Uppercase, Lowercase and a digit.'
+                            }
 
+                        })} type="password" placeholder="Your Password" className="input input-bordered border-2 w-full" required />
                     </div>
-                    <div className="form-control w-full max-w-xs">
-                        <label className="label"> <span className="label-text">Name</span> </label>
-                        <input type="text" {...register("name", {
-                            required: "name is required"
-                        })} className="input input-bordered w-full max-w-xs" /><input />
-                        {errors.name && <span className='text-red-600'>{errors.name.message}</span>}
+                    <div className="form-control w-full mb-2">
+                        <label className="label">
+                            <span className="label-text font-medium">What do you want to do?</span>
+                        </label>
+                        <select {...register('role')} className="select select-bordered border-2 w-full" required>
+                            <option value='buyer'>Buyer ( I want to buy )</option>
+                            <option value='seller'>Seller ( I want to sell )</option>
+                        </select>
                     </div>
-                    <div className="form-control w-full max-w-xs">
-                        <label className="label"> <span className="label-text">Email</span> </label>
-                        <input type="text" {...register("email", {
-                            required: "email is required"
-                        })} className="input input-bordered w-full max-w-xs" /><input />
-                        {errors.email && <span className='text-red-600'>{errors.email.message}</span>}
-                    </div>
-                    <div className="form-control w-full max-w-xs">
-                        <label className="label"> <span className="label-text">Password</span> </label>
-                        <input type="password" {...register("password", {
-                            required: "password is required",
-                            minLength: { value: 6, message: "password must be use 6 characters or long" },
-                            pattern: { value: /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])/, message: 'password must be strong' }
-                        })} className="input input-bordered w-full max-w-xs" /><input />
-                        {errors.password && <span className='text-red-600'>{
-                            errors.password.message}</span>}
-                    </div>
-                    <input className='btn btn-accent w-full' type="submit" />
-                    {signUpError && <p className='text-red-600'>{signUpError}</p>}
-                    {userRole && <p className='text-red-600'>{userRole}</p>}
+                    {
+                        errors.password && <p className='text-sm text-red-500'>{errors.password?.message}</p>
+                    }
+                    <button type='submit' className='btn btn-neutral-content hover:glass border-0 mt-2' disabled={formLoading}>Register</button>
+                    <p className='text-sm text-center'>Already Have an Account? <Link to='/login' className='font-bold text-base hover:underline'>Login</Link></p>
                 </form>
-                <p>
-                    allready have an account <Link className='text-secondary' to='/login'>please login</Link>
-                    <div className="divider">OR</div>
-                    <button className='btn btn-outline w-full'>CONTINUE WITH GOOGLE</button>
-                </p>
+                <div className="divider">OR</div>
+                <GoogleSignIn setFormLoading={setFormLoading} formLoading={formLoading} setRedirect={setRedirect}></GoogleSignIn>
             </div>
         </div>
     );

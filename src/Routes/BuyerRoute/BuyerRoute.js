@@ -4,7 +4,7 @@ import { AuthContext } from '../../Context/AuthProvider/AuthProvider';
 import useRole from '../../Pages/Hooks/useRole';
 import Loader from '../../Pages/Loader/Loader';
 
-const AdminRoute = ({ children }) => {
+const BuyerRoute = ({ children }) => {
 
     const { userInfo, userLoading, signOutUser } = useContext(AuthContext);
     const location = useLocation();
@@ -14,7 +14,7 @@ const AdminRoute = ({ children }) => {
         return <Loader>Logging in...</Loader>
     }
 
-    if (userInfo && userInfo?.email && role === 'admin') {
+    if (userInfo && userInfo?.email && role === 'buyer') {
         return children;
     }
 
@@ -22,4 +22,4 @@ const AdminRoute = ({ children }) => {
     return <Navigate to='/login' state={{ from: location }} replace></Navigate>
 };
 
-export default AdminRoute;
+export default BuyerRoute;

@@ -1,12 +1,10 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import error from '../../Assets/images/error-page.png';
+import error from '../../assets/error-page.png';
 
 const ErrorPage = () => {
     return (
         <div className='w-screen h-screen relative'>
-            <Helmet><title>Error 404 - Cadence</title></Helmet>
             <div className='flex flex-col justify-center items-center gap-3 text-center absolute right-1/2 bottom-1/2 translate-x-1/2 translate-y-1/2 bg-neutral-focus px-4 py-8 rounded-lg min-w-full md:min-w-fit'>
                 <img src={error} alt="" className='w-20 md:w-auto' />
                 <h1 className='text-5xl md:text-9xl font-bold'>404</h1>
