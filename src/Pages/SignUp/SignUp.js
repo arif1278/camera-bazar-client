@@ -50,7 +50,7 @@ const SignUp = () => {
                 setFormLoading(false);
             })
     }
-
+// save userinfo
 
     const saveUserInfo = (name, email, role) => {
         const user = {
