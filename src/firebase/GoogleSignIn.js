@@ -46,7 +46,7 @@ const GoogleSignIn = ({ from, formLoading, setFormLoading, setRedirect }) => {
             role: 'buyer'
         }
 
-        fetch('http://localhost:5000/users', {
+        fetch('https://b612-used-products-resale-server-side-arif1278.vercel.app/users', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

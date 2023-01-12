@@ -16,7 +16,7 @@ const CheckoutForm = ({ order }) => {
 
     // Get client secret
     useEffect(() => {
-        fetch('http://localhost:5000/create-payment-intent', {
+        fetch('https://b612-used-products-resale-server-side-arif1278.vercel.app/create-payment-intent', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -88,7 +88,7 @@ const CheckoutForm = ({ order }) => {
             }
 
             // Post payment
-            fetch('http://localhost:5000/payments', {
+            fetch('https://b612-used-products-resale-server-side-arif1278.vercel.app/payments', {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json',

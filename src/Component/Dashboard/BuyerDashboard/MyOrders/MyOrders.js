@@ -13,7 +13,7 @@ const MyOrders = () => {
     const { isLoading, data: orders } = useQuery({
         queryKey: ['orders', userInfo.email],
         queryFn: () =>
-            axios.get(`http://localhost:5000/orders?email=${userInfo.email}`, {
+            axios.get(`https://b612-used-products-resale-server-side-arif1278.vercel.app/orders?email=${userInfo.email}`, {
                 headers: {
                     authorization: `Bearer ${localStorage.getItem('camerabazarsecrettoken')}`
                 }

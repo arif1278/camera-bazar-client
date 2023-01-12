@@ -14,7 +14,7 @@ const AllSellers = () => {
     const { isLoading, data: sellers, refetch } = useQuery({
         queryKey: ['sellers'],
         queryFn: () =>
-            axios.get('http://localhost:5000/users?role=seller', {
+            axios.get('https://b612-used-products-resale-server-side-arif1278.vercel.app/users?role=seller', {
                 headers: {
                     authorization: `Bearer ${localStorage.getItem('camerabazarsecrettoken')}`
                 }
@@ -26,7 +26,7 @@ const AllSellers = () => {
     const handleDelete = (data) => {
         const id = data._id;
 
-        fetch(`http://localhost:5000/users/${id}`, {
+        fetch(`https://b612-used-products-resale-server-side-arif1278.vercel.app/users/${id}`, {
             method: 'DELETE',
             headers: {
                 authorization: `Bearer ${localStorage.getItem('camerabazarsecrettoken')}`
@@ -43,7 +43,7 @@ const AllSellers = () => {
 
     // Verify seller
     const handleVerify = (email) => {
-        fetch(`http://localhost:5000/users?email=${email}`, {
+        fetch(`https://b612-used-products-resale-server-side-arif1278.vercel.app/users?email=${email}`, {
             method: 'PATCH',
             headers: {
                 authorization: `Bearer ${localStorage.getItem('camerabazarsecrettoken')}`

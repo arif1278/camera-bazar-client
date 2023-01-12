@@ -8,7 +8,7 @@ const CamerCategory = () => {
   const [cameras, setCameras] = useState();
 
   useEffect(() => {
-    fetch('http://localhost:5000/cameraOptions')
+    fetch('https://b612-used-products-resale-server-side-arif1278.vercel.app/cameraOptions')
       .then(res => res.json())
       .then(data => setCameras(data));
   }, [])

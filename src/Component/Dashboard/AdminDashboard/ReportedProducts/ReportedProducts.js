@@ -12,7 +12,7 @@ const ReportedProducts = () => {
     // Get reported products data
     const { isLoading, data: reportedProducts, refetch } = useQuery({
         queryKey: ['reportedProducts'],
-        queryFn: () => axios.get('http://localhost:5000/report/products', {
+        queryFn: () => axios.get('https://b612-used-products-resale-server-side-arif1278.vercel.app/products', {
             headers: {
                 authorization: `Bearer ${localStorage.getItem('camerabazarsecrettoken')}`
             }
@@ -24,7 +24,7 @@ const ReportedProducts = () => {
     const handleDelete = (product) => {
         const productId = product.productId;
 
-        fetch(`http://localhost:5000/report/products/${productId}`, {
+        fetch(`https://b612-used-products-resale-server-side-arif1278.vercel.app/${productId}`, {
             method: 'DELETE',
             headers: {
                 authorization: `Bearer ${localStorage.getItem('camerabazarsecrettoken')}`

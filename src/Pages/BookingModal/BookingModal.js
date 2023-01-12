@@ -32,7 +32,7 @@ const BookingModal = ({ product,setProduct,refetch }) => {
             status: 'unpaid'
         }
 
-        fetch('http://localhost:5000/orders', {
+        fetch('https://b612-used-products-resale-server-side-arif1278.vercel.app/orders', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',

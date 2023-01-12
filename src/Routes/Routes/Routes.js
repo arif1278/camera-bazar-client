@@ -58,7 +58,7 @@ export const router = createBrowserRouter([
             {
                 path: '/cameraOptions/:id',
                 element:<Products></Products> ,
-                loader: ({ params }) => fetch(`http://localhost:5000/cameraOptions/${params.id}`)
+                loader: ({ params }) => fetch(`https://b612-used-products-resale-server-side-arif1278.vercel.app/cameraOptions/${params.id}`)
             },
         ]
 
@@ -75,7 +75,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: '/dashboard/checkout/:id',
-                loader: ({ params }) => fetch(`http://localhost:5000/orders/${params.id}`),
+                loader: ({ params }) => fetch(`https://b612-used-products-resale-server-side-arif1278.vercel.app/orders/${params.id}`),
                 element: <Checkout></Checkout>
             },
             {

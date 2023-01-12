@@ -16,7 +16,7 @@ const MyProducts = () => {
     const { isLoading, data: products, refetch } = useQuery({
         queryKey: ['my-products', userInfo.email],
         queryFn: () =>
-            axios.get(`http://localhost:5000/products/${userInfo.email}`, {
+            axios.get(`https://b612-used-products-resale-server-side-arif1278.vercel.app/${userInfo.email}`, {
                 headers: {
                     authorization: `Bearer ${localStorage.getItem('camerabazarsecrettoken')}`
                 }
@@ -26,7 +26,7 @@ const MyProducts = () => {
 
     // Update product data
     const handleAd = (id) => {
-        fetch(`http://localhost:5000/products/${id}`, {
+        fetch(`https://b612-used-products-resale-server-side-arif1278.vercel.app/${id}`, {
             method: 'PATCH',
             headers: {
                 authorization: `Bearer ${localStorage.getItem('camerabazarsecrettoken')}`
@@ -46,7 +46,7 @@ const MyProducts = () => {
     const handleDelete = (product) => {
         const id = product._id;
 
-        fetch(`http://localhost:5000/products/${id}`, {
+        fetch(`https://b612-used-products-resale-server-side-arif1278.vercel.app/products/${id}`, {
             method: 'DELETE',
             headers: {
                 authorization: `Bearer ${localStorage.getItem('camerabazarsecrettoken')}`

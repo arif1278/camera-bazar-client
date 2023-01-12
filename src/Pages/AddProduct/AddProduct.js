@@ -19,7 +19,7 @@ const AddProduct = () => {
     const { isLoading, data: categories } = useQuery({
         queryKey: ['categories'],
         queryFn: () =>
-            fetch('http://localhost:5000/cameraOptions')
+            fetch('https://b612-used-products-resale-server-side-arif1278.vercel.app/cameraOptions')
                 .then(res => res.json())
     })
 
@@ -62,7 +62,7 @@ const AddProduct = () => {
                         status: 'available'
                     }
 
-                    fetch('http://localhost:5000/products', {
+                    fetch('https://b612-used-products-resale-server-side-arif1278.vercel.app/products', {
                         method: 'POST',
                         headers: {
                             'content-type': 'application/json',
